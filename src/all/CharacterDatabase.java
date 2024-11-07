@@ -18,11 +18,18 @@ public class CharacterDatabase implements CharacterDatabaseInterface{
     }
 
     public void removeCharacter(String name) {
+        if(!hashTable.contains(name)) {
+            return;
+        }
         int index = hashTable.getValue(name);
         characters.set(index, null);
+        hashTable.remove(name);
     }
 
     public Character getCharacter(String name) {
+        if(!hashTable.contains(name)) {
+            return null;
+        }
         int index = hashTable.getValue(name);
         return characters.get(index);
     }
@@ -32,6 +39,13 @@ public class CharacterDatabase implements CharacterDatabaseInterface{
     }
 
     public void printList() {
-
+        System.out.println("Character List\n----------------");
+        for (Character character : characters) {
+            if (character == null) {
+                System.out.println("null");
+            }else {
+                System.out.println(character.getName());
+            }
+        }
     }
 }

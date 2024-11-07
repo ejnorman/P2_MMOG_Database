@@ -46,6 +46,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
 // -------------------------
     public void displayHashTable()
     {
+        System.out.println("Hash Table\n------------");
         checkIntegrity();
         for (int index = 0; index < hashTable.length; index++)
         {
@@ -70,6 +71,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
             V oldValue;                // Value to return
 
             int index = getHashIndex(key);
+            System.out.println("Hash: " + index);
 
             // Assertion: index is within legal range for hashTable
             assert (index >= 0) && (index < hashTable.length);
@@ -171,8 +173,8 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
         } // end if
 
         // Check for and resolve collision
-        hashIndex = linearProbe(hashIndex, key);
-//    hashIndex = quadraticProbe(hashIndex, key);
+        //hashIndex = linearProbe(hashIndex, key);
+        hashIndex = quadraticProbe(hashIndex, key);
 
         return hashIndex;
     } // end getHashIndex
@@ -209,6 +211,39 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
             return availableIndex;                          // Index of an available location
     } // end linearProbe
 
+    private int quadraticProbe(int index, K key)
+    {
+        int j = 1;
+        boolean found = false;
+        int availableIndex = -1; // Index of first available location (from which an entry was removed)
+
+        while ( !found && (hashTable[index] != null) )
+        {
+            int increment = (int)Math.pow(j, 2); //the amount incremented to find new space
+            if (hashTable[index] != AVAILABLE)
+            {
+                if (key.equals(hashTable[index].getKey()))
+                    found = true; // Key found
+                else             // Follow probe sequence
+                    index = (index + increment) % hashTable.length;         // Quadratic probing
+            }
+            else // Skip entries that were removed
+            {
+                // Save index of first location in removed state
+                if (availableIndex == -1)
+                    availableIndex = index;
+
+                index = (index + increment) % hashTable.length;            // Quadratic probing
+            } // end if
+            j++;
+        } // end while
+        // Assertion: Either key or null is found at hashTable[index]
+
+        if (found || (availableIndex == -1) )
+            return index;                                      // Index of either key or null
+        else
+            return availableIndex;                          // Index of an available location
+    } // end linearProbe
 
 
     // Increases the size of the hash table to a prime >= twice its old size.
