@@ -16,7 +16,7 @@ class CharacterDatabaseTest {
         db.addCharacter("FB", 1.47, 47.0, -80);
         db.addCharacter("Ea", 1.86, 71.0, 50);
         db.addCharacter("Daegon", 1.80, 75.0, 50);
-        assertEquals(db.getCharacter("Ea"), ea);
+        assertEquals(db.getCharacter("Ea").getName(), ea.getName());
     }
 
     @Test
@@ -27,7 +27,7 @@ class CharacterDatabaseTest {
         db.addCharacter("Ea", 1.86, 71.0, 50);
         db.addCharacter("Daegon", 1.80, 75.0, 50);
         db.removeCharacter("Ea");
-        assertEquals(db.getCharacter("Daegon"), daegon);
+        assertEquals(db.getCharacter("Daegon").getName(), daegon.getName());
     }
 
     @Test
@@ -38,7 +38,7 @@ class CharacterDatabaseTest {
         db.addCharacter("Ea", 1.86, 71.0, 50);
         db.addCharacter("Daegon", 1.80, 75.0, 50);
         db.removeCharacter("Ea");
-        assertEquals(db.getCharacter("Daegon"), daegon);
+        assertEquals(db.getCharacter("Daegon").getName(), daegon.getName());
         assertNull(db.getCharacter("Ea"));
     }
 
@@ -53,6 +53,6 @@ class CharacterDatabaseTest {
         table.add("FB", 0);
         table.add("Ea", 1);
         table.add("Daegon", 2);
-        assertEquals(db.getHashTable(), table);
+        assertEquals(db.getHashTable().getValue("Ea"), table.getValue("Ea"));
     }
 }

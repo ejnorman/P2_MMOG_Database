@@ -11,6 +11,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
     private static final int MAX_CAPACITY = 10000;
 
     // The hash table:
+    private int probeCount;
     private Entry<K, V>[] hashTable;
     private int tableSize;                                // Must be prime
     private static final int MAX_SIZE = 2 * MAX_CAPACITY; // Max size of hash table
@@ -73,6 +74,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
             int index = getHashIndex(key);
             System.out.println("Hash: " + index);
 
+
             // Assertion: index is within legal range for hashTable
             assert (index >= 0) && (index < hashTable.length);
 
@@ -128,6 +130,19 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
 
         return result;
     } // end getValue
+
+    public V locate(K key){
+        checkIntegrity();
+        V result = null;
+
+        int index = getHashIndex(key);
+
+        if ((hashTable[index] != null) && (hashTable[index] != AVAILABLE))
+            result = hashTable[index].getValue(); // Key found; get value
+        // Else not found; result is null
+
+        return result;
+    }
 
     public boolean contains(K key)
     {
@@ -211,14 +226,24 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
             return availableIndex;                          // Index of an available location
     } // end linearProbe
 
+    private int getProbes(){
+        return probeCount;
+    }
+
+    private void resetProbeCount(){
+        this.probeCount = 0;
+    }
+
     private int quadraticProbe(int index, K key)
     {
+        resetProbeCount();
         int j = 1;
         boolean found = false;
         int availableIndex = -1; // Index of first available location (from which an entry was removed)
 
         while ( !found && (hashTable[index] != null) )
         {
+            probeCount++;
             int increment = (int)Math.pow(j, 2); //the amount incremented to find new space
             if (hashTable[index] != AVAILABLE)
             {
