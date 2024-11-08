@@ -6,6 +6,10 @@ public class CharacterDatabase implements CharacterDatabaseInterface{
     private ArrayList<Character> characters;
     private HashedDictionary<String, Integer> hashTable;
 
+    /**
+     * Creates CharacterDatabase object with ArrayList of Character objects and
+     * HashedDictionary of character names and index in list
+     */
     public CharacterDatabase() {
         characters = new ArrayList<>();
         hashTable = new HashedDictionary<>();
@@ -22,7 +26,7 @@ public class CharacterDatabase implements CharacterDatabaseInterface{
             return;
         }
         int index = hashTable.getValue(name);
-        characters.set(index, null);
+        characters.set(index, null); //to not shift every object in list
         hashTable.remove(name);
     }
 

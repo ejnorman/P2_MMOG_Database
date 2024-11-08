@@ -22,10 +22,12 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
     public HashedDictionary()
     {
         this(DEFAULT_CAPACITY); // Call next constructor
+        this.probeCount = 1;
     } // end default constructor
 
     public HashedDictionary(int initialCapacity)
     {
+        this.probeCount = 1;
         initialCapacity = checkCapacity(initialCapacity);
         numberOfEntries = 0;    // Dictionary is empty
 
@@ -72,8 +74,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
             V oldValue;                // Value to return
 
             int index = getHashIndex(key);
-            System.out.println("Hash: " + index);
-
+            System.out.println("Hash: " + index);//Index in hash table where key-value pair will be stored
 
             // Assertion: index is within legal range for hashTable
             assert (index >= 0) && (index < hashTable.length);
@@ -92,7 +93,7 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
 
             // Ensure that hash table is large enough for another add
             if (isHashTableTooFull())
-                enlargeHashTable();
+                enlargeHashTable();// this calls the add method which means hash indexes are printed for data re-entry
 
             return oldValue;
         } // end if
@@ -131,6 +132,9 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
         return result;
     } // end getValue
 
+    //don't get the purpose of a locate method. It can either be used to get the index
+    //but getHashIndex already does that, or it can cut out the repetitive code of getValue
+    //and remove, but then it is just like getValue.
     public V locate(K key){
         checkIntegrity();
         V result = null;
@@ -178,6 +182,11 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
         return new ValueIterator();
     } // end getValueIterator
 
+    /**
+     * Determines the index at which the key-value pair will be stored in the hash table
+     * @param key identifier (can be anything)
+     * @return index of hash table where key-value pair will be placed
+     */
     private int getHashIndex(K key)
     {
         int hashIndex = key.hashCode() % hashTable.length;
@@ -226,14 +235,27 @@ public class HashedDictionary<K, V> implements DictionaryInterface<K, V>
             return availableIndex;                          // Index of an available location
     } // end linearProbe
 
-    private int getProbes(){
+    /**
+     * Returns the amount of times it took to place an entry in an empty space
+     * @return amount of probes till entry is placed
+     */
+    public int getProbes(){
         return probeCount;
     }
 
+    /**
+     * Reset probe count to 1
+     */
     private void resetProbeCount(){
-        this.probeCount = 0;
+        this.probeCount = 1;
     }
 
+    /**
+     * Use quadratic probing formula to determine the index where an entry can be placed
+     * @param index hash index based on hash code
+     * @param key identifier
+     * @return an available index for entry placement
+     */
     private int quadraticProbe(int index, K key)
     {
         resetProbeCount();
