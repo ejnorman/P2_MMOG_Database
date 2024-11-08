@@ -72,4 +72,14 @@ class HashedDictionaryTest {
         hd.clear();
         assertEquals(0, hd.getSize());
     }
+
+    @Test
+    void getProbes() {
+        HashedDictionary<String, String> hd = new HashedDictionary<>();
+        hd.add("London", "England");
+        hd.add("Paris", "France");
+        hd.add("Madrid", "Spain");
+        hd.add("Oslo", "Norway");
+        assertEquals(1, hd.getProbes());
+    }
 }
